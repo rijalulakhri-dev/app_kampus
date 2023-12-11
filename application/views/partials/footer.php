@@ -3,7 +3,7 @@
                     <div class="container-fluid">
                         <div class="row">
                             <div class="col-sm-6">
-                                <script>document.write(new Date().getFullYear())</script> © Library.
+                                <script>document.write(new Date().getFullYear())</script> © Kampus.
                             </div>
                         </div>
                     </div>

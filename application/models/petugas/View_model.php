@@ -7,7 +7,15 @@ class View_model extends CI_Model {
 	{
 		$this->db->select('*');
 		$this->db->join('tb_trx', 'tb_trx.id_trx = tb_mhs.mhs_id');
-		$this->db->where('jurusan_mhs', $this->session->userdata('jurusan'));
+		$this->db->where('matkul_kode', $this->session->userdata('kode_matkul'));
+		return $this->db->get('tb_mhs');
+		
+	}
+
+	function getMhsAdmin() 
+	{
+		$this->db->select('*');
+		$this->db->join('tb_trx', 'tb_trx.id_trx = tb_mhs.mhs_id');
 		return $this->db->get('tb_mhs');
 		
 	}
@@ -20,8 +28,18 @@ class View_model extends CI_Model {
 		
 	}
 
-	function getUser() 
+	function dosenAuthBind($nip)
 	{
+		$this->db->join('tb_matkul', 'tb_matkul.dosen_nip = tb_user.nip');
+		$this->db->limit(1);
+		$this->db->where('tb_user.nip', $nip);
+		return $this->db->get('tb_user');
+		
+	}
+
+
+	function getUser() 
+	{		
 		return $this->db->get('tb_user');
 	}
 
@@ -46,6 +64,14 @@ class View_model extends CI_Model {
 
 	}
 
+	function cetak_mhs()
+	{
+		$this->db->select('*');
+		$this->db->join('tb_matkul', 'tb_matkul.kode_matkul = tb_trx.matkul_kode');
+		$this->db->join('tb_mhs', 'tb_mhs.nim_mhs = tb_trx.mhs_nim');
+		return $this->db->get('tb_trx');
+			
+	}
 }
 
 /* End of file View_model.php */

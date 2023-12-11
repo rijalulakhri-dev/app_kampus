@@ -21,7 +21,6 @@
 								<th>Jenis Kelamin</th>
 								<th>No Hp</th>
 								<th>Jurusan/Prodi</th>
-								<th>Lainnya</th>
 							</tr>
 							</thead>
 							<tbody>
@@ -35,10 +34,7 @@
 									<td><?= ucfirst($d->jk_mhs); ?></td>
 									<td><?= strtoupper($d->noHp_mhs); ?></td>
 									<td><?= strtoupper($d->jurusan_mhs); ?></td>
-									<td>
-										<a href="<?= base_url('dosen/input_nilai/') ?>" class="btn btn-soft-primary waves-effect waves-light"><i class="bx bx-edit font-size-16 align-middle me-2"></i> Nilai</a>
-										<button class="btn btn-soft-success waves-effect waves-light"><i class="bx bx-check font-size-16 align-middle me-2"></i> Selesai</button>
-									</td>
+
 								</tr>
 								<?php } ?>
 							</tbody>

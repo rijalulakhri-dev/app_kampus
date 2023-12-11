@@ -2,6 +2,8 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 $route['default_controller'] = 'Dashboard';
+$route['clear_db'] = 'Dashboard/clear_db';
+
 $route['petugas/daftar_user'] = 'petugas/View_controller/index';
 $route['petugas/tambah_user'] = 'petugas/View_controller/addUser';
 $route['petugas/tambah_user/process'] = 'petugas/View_controller/pro_add_user';
@@ -12,6 +14,7 @@ $route['petugas/tambah_matkul'] = 'petugas/View_controller/setMatkul';
 $route['petugas/data_matkul'] = 'petugas/View_controller/viewMatkul';
 $route['petugas/process/tambah_matkul'] = 'petugas/View_controller/process_set_matkul';
 
+$route['kajur/data_mhs'] = 'petugas/View_controller/viewKajur';
 
 
 $route['dosen/data_mhs'] = 'dosen/View_controller/data_mhs';
@@ -21,7 +24,7 @@ $route['cari_dosen/(:any)'] = 'petugas/View_controller/tesDosen/$1';
 
 
 
-
+$route['cetak'] = 'Cetak/index';
 
 
 

@@ -86,6 +86,7 @@ class View_controller extends CI_Controller {
 
 		$dataTwo = array(
 			'id_trx' => $mhsId,
+			'matkul_kode' => $this->input->post('nama_matkul'),
 			'mhs_nim' => $this->input->post('nim_mhs')
 			
 		);
@@ -100,7 +101,7 @@ class View_controller extends CI_Controller {
 
 	public function viewMhs() 
 	{
-		$load = $this->view->getMhs()->result();
+		$load = $this->view->getMhsAdmin()->result();
 		$data = array(
 			'title' => 'Data Mahasiswa',
 			'pageTitle' => 'Data Mahasiswa',
@@ -157,6 +158,27 @@ class View_controller extends CI_Controller {
 			'pages' => 'page/petugas/Data_matkul',
 			'data' => $load
 		);	
+
+		$this->load->view('main', $data);
+		
+	}
+
+	public function viewKajur()
+	{
+		$load = $this->view->cetak_mhs()->result();
+		
+		echo "<pre>";
+		var_dump($load);
+		echo "</pre>";
+		die();
+		
+
+		$data = array(
+			'title' => 'Daftar Mahasiswa',
+			'pageTitle' => 'Daftar Mahasiswa',
+			'pages' => 'page/kajur/Data_kajur',
+			'data' => $load 
+		);
 
 		$this->load->view('main', $data);
 		

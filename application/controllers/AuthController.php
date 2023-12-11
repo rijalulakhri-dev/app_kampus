@@ -8,6 +8,7 @@ class AuthController extends CI_Controller {
 	{
 		parent::__construct();
 		$this->load->model('petugas/Insert_model', 'ins');
+		$this->load->model('petugas/View_model', 'view');
 		
 	}
 	
@@ -55,13 +56,13 @@ class AuthController extends CI_Controller {
                     break;
 
                 case '3': // dosen
+					$dataDosen = $this->view->dosenAuthBind($data['nip'])->row_array();
                     $this->session->set_userdata(array(
 						'masuk' => TRUE,
                         'username' => $data['username'],
 						'nama_user' => $data['nama_user'],
                         'password' => $data['password'],
-						'jurusan' => $data['jurusan_user'],
-						'nip' => $data['nip'],
+						'kode_matkul' => $dataDosen['kode_matkul'],
                         'level' => '3',
                     ));
                     redirect('Dashboard');
@@ -73,7 +74,7 @@ class AuthController extends CI_Controller {
                         'username' => $data['username'],
 						'nama_user' => $data['nama_user'],
                         'password' => $data['password'],
-                        'level' => '3',
+                        'level' => '4',
                     ));
                     redirect('Dashboard');
                     break;

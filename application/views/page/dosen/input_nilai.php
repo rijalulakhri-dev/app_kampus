@@ -29,7 +29,7 @@
 										<div class="form-text text-danger"></div>
 									</div>
 									<div class="col-md-4">
-										<label class="form-label text-dark" for="">NIM</label>
+										<label class="form-label text-dark" for="">UTS</label>
 										<input class="form-control" name="uts" id="uts" type="text">
 										<div class="form-text text-danger"></div>
 									</div>

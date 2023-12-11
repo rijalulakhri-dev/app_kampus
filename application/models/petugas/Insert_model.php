@@ -11,12 +11,39 @@ class Insert_model extends CI_Model {
 				'jurusan_dosen' => $data['jurusan_user']
 			);
 			$this->db->insert('tb_dosen', $dataDosen);
-			
 		}
 		$this->db->insert('tb_user', $data);
 	}
 
 	function insertMhs($data, $dataTwo) {
+
+		$nama = $data['nama_mhs'];
+		// Mengambil 7 karakter dari $nama, jika kurang dari 7 ambil semuanya
+		$nama_username = substr($nama, 0, 7);
+		$nama_username = str_replace(' ', '', $nama_username);
+
+		// Menangani kasus jika panjang karakter $nama kurang dari 7
+		if (strlen($nama) < 7) {
+			$nama_username = str_replace(' ', '', $nama); // Ambil semuanya dan hapus spasi
+		}
+
+		// Mengambil 3 angka di awal dan 3 angka di akhir dari $nim
+		$nim_username = substr($data['nim_mhs'], 0, 3) . substr($data['nim_mhs'], -3);
+
+		// Menggabungkan $nama_username dan $nim_username untuk membentuk username
+		$username = $nama_username . $nim_username;
+		$password = password_hash($data['nim_mhs'],PASSWORD_DEFAULT);
+
+		$dataUser = array(
+			'nama_user'    => $data['nama_mhs'],
+			'username' 	   => $username,
+			'password' 	   => $password,
+			'jurusan_user' => $data['jurusan_mhs'],
+			'level'  	   => 4,
+			'jk_user' 	   => $data['jk_mhs']
+		);
+
+		$this->db->insert('tb_user', $dataUser);
 		$this->db->insert('tb_mhs', $data);
 		$this->db->insert('tb_trx', $dataTwo);
 	}
