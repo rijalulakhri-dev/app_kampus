@@ -12,7 +12,7 @@
 									<div class="col-md-4">
 										<label class="form-label text-dark" for="jurusan_matkul">Jurusan/Prodi</label>
 										<select class="form-select digits" name="jurusan_matkul" id="jurusan_matkul"
-											onchange="updateMataKuliahOptions()" required>
+											required>
 											<option value="" selected>-- Pilih --</option>
 											<option value="tata boga">Tata Boga</option>
 											<option value="seni rupa">Seni Rupa</option>
@@ -61,63 +61,90 @@
 		</div> <!-- container-fluid -->
 	</div>
 </div>
-
-
 <script>
-	const mataKuliahOptions = {
-		"tata boga": ["Mikrobiologi Pangan", "Teknologi Pangan"],
-		"seni rupa": ["Pengantar Seni Rupa", "Desain Grafis"],
-		"seni tari": ["Antropologi Tari", "Manajemen Tari"],
-		"seni musik": ["Sejarah Musik", "Minor Vokal"]
-	};
+    const baseUrl = "<?= base_url(); ?>";
+    const mataKuliahOptions = {
+        "tata boga": ["Mikrobiologi Pangan", "Teknologi Pangan"],
+        "seni rupa": ["Pengantar Seni Rupa", "Desain Grafis"],
+        "seni tari": ["Antropologi Tari", "Manajemen Tari"],
+        "seni musik": ["Sejarah Musik", "Minor Vokal"]
+    };
+    const dosenOptions = {};
 
-	function updateMataKuliahOptions() {
-		const jurusanSelect = document.getElementById("jurusan_matkul");
-		const mataKuliahSelect = document.getElementById("nama_matkul");
-		const selectedJurusan = jurusanSelect.value;
+    function updateMataKuliahOptions() {
+      const jurusanSelect = document.getElementById("jurusan_matkul");
+      const mataKuliahSelect = document.getElementById("nama_matkul");
+      const dosenSelect = document.getElementById("dosen_nip");
+      const selectedJurusan = jurusanSelect.value;
 
-		mataKuliahSelect.innerHTML = "<option value='' disabled selected>-- Pilih --</option>";
+      mataKuliahSelect.innerHTML = "<option value='' disabled selected>-- Pilih --</option>";
+      dosenSelect.innerHTML = "<option value='' disabled selected>-- Pilih --</option>";
 
-		if (selectedJurusan in mataKuliahOptions) {
-			mataKuliahOptions[selectedJurusan].forEach(mataKuliah => {
-				const option = document.createElement("option");
-				option.text = mataKuliah;
-				mataKuliahSelect.add(option);
-			});
-		}
+      if (selectedJurusan in mataKuliahOptions) {
+        const uniqueNips = {}; // Object to track unique NIPs
 
-		// Mendapatkan nilai terpilih dari jurusan_matkul
-		var selectedJurusan = document.getElementById("jurusan_matkul").value;
+        mataKuliahOptions[selectedJurusan].forEach(mataKuliah => {
+          const option = document.createElement("option");
+          option.text = mataKuliah;
+          mataKuliahSelect.add(option);
+        });
 
-		// Mengambil elemen select untuk dosen_nip
-		var dosenNipSelect = document.getElementById("dosen_nip");
+        // Check if dosenOptions already loaded
+        if (Object.keys(dosenOptions).length === 0 || !dosenOptions[selectedJurusan]) {
+          // Fetch data dosen from server only if dosenOptions is empty or not available for the selectedJurusan
+          fetch(`${baseUrl}/cari_dosen/${selectedJurusan}`)
+            .then(response => {
+              if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+              }
+              return response.text();
+            })
+            .then(data => {
+              // Handling PHP serialized data
+              if (data.startsWith('array') || data.startsWith('a:')) {
+                // Assuming the data is serialized, attempting to unserialize
+                try {
+                  data = JSON.parse(data.replace(/(\w+):/g, '"$1":').replace(/(\w+)=>/g, '"$1":'));
+                } catch (error) {
+                  throw new Error('Error parsing PHP serialized data');
+                }
+              }
 
-		// Mengosongkan opsi sebelum menambahkan yang baru
-		dosenNipSelect.innerHTML = '<option value="" selected>-- Pilih --</option>';
+              // If data is already JSON, parse it
+              const parsedData = typeof data === 'string' ? JSON.parse(data) : data;
 
-		// Memeriksa apakah jurusan terpilih tidak kosong
-		if (selectedJurusan !== "") {
-			// Menggunakan URL untuk mencari dosen berdasarkan jurusan
-			var url = "<?= base_url('cari_dosen/'); ?>" + encodeURIComponent(selectedJurusan);
+              dosenOptions[selectedJurusan] = parsedData;
 
-			// Mengambil data dari server menggunakan AJAX
-			// Anda bisa menggunakan library seperti jQuery atau fetch API
-			fetch(url)
-				.then(response => response.json())
-				.then(data => {
-					// Menambahkan opsi ke elemen select
-					data.forEach(function (dosen) {
-						var option = document.createElement("option");
-						option.value = dosen.nip_dosen;
-						option.text = dosen.nama_dosen;
-						dosenNipSelect.appendChild(option);
-					});
-				})
-				.catch(error => console.error('Error:', error));
-		}
-	}
+              dosenOptions[selectedJurusan].forEach(dosen => {
+                // Check if NIP is already in uniqueNips object before adding it to the dropdown
+                if (!uniqueNips[dosen.nip_dosen]) {
+                  uniqueNips[dosen.nip_dosen] = true;
 
-	document.addEventListener("DOMContentLoaded", updateMataKuliahOptions);
+                  const option = document.createElement("option");
+                  option.value = dosen.nip_dosen;
+                  option.text = dosen.nama_dosen;
+                  dosenSelect.add(option);
+                }
+              });
+            })
+            .catch(error => console.error("Error fetching data:", error.message));
+        } else {
+          // Use cached dosenOptions if available
+          dosenOptions[selectedJurusan].forEach(dosen => {
+            // Check if NIP is already in uniqueNips object before adding it to the dropdown
+            if (!uniqueNips[dosen.nip_dosen]) {
+              uniqueNips[dosen.nip_dosen] = true;
+
+              const option = document.createElement("option");
+              option.value = dosen.nip_dosen;
+              option.text = dosen.nama_dosen;
+              dosenSelect.add(option);
+            }
+          });
+        }
+      }
+    }
+
+    // document.addEventListener("DOMContentLoaded", updateMataKuliahOptions);
+    document.getElementById("jurusan_matkul").addEventListener("click", updateMataKuliahOptions);
 </script>
-
-

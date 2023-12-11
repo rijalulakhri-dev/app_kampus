@@ -31,8 +31,6 @@ class View_model extends CI_Model {
 		$this->db->where('level', 3);
 		$this->db->join('tb_dosen', 'tb_dosen.nip_dosen = tb_user.nip');
 		return $this->db->get('tb_user');
-		
-		
 	}
 
 	function getMatkul() 
