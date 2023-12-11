@@ -166,7 +166,20 @@ class View_controller extends CI_Controller {
 	{
 		$val = str_replace('%20', ' ', $val);
 		$testing = $this->view->getDosenByJurusan($val)->result();
-		var_dump($testing);
+
+		// Mengubah data ke format yang diinginkan
+		$result = array();
+		foreach ($testing as $row) {
+			$result[] = array(
+				'jurusan_dosen' => $row->jurusan_dosen,
+				'nip_dosen' => $row->nip_dosen,
+				'nama_dosen' => $row->nama_dosen,
+			);
+		}
+
+		// Mengembalikan data JSON
+		header('Content-Type: application/json');
+		echo json_encode($result);
 	}
 
 }
