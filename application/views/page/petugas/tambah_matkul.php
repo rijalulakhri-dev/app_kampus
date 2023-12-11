@@ -30,7 +30,7 @@
 									</div>
 									<div class="col-md-4">
 										<label class="form-label text-dark" for="kode_matkul">Kode Mata Kuliah</label>
-										<input class="form-control" name="kode_matkul" type="text" required>
+										<input class="form-control" name="kode_matkul" type="text" readonly>
 										<div class="form-text text-danger"></div>
 									</div>
 								</div>
@@ -64,10 +64,22 @@
 <script>
     const baseUrl = "<?= base_url(); ?>";
     const mataKuliahOptions = {
-        "tata boga": ["Mikrobiologi Pangan", "Teknologi Pangan"],
-        "seni rupa": ["Pengantar Seni Rupa", "Desain Grafis"],
-        "seni tari": ["Antropologi Tari", "Manajemen Tari"],
-        "seni musik": ["Sejarah Musik", "Minor Vokal"]
+        "tata boga": [
+            { nama: "Mikrobiologi Pangan", kode: "dik101" },
+            { nama: "Teknologi Pangan", kode: "dik102" }
+        ],
+        "seni rupa": [
+            { nama: "Pengantar Seni Rupa", kode: "dik201" },
+            { nama: "Desain Grafis", kode: "dik202" }
+        ],
+        "seni tari": [
+            { nama: "Antropologi Tari", kode: "dik301" },
+            { nama: "Manajemen Tari", kode: "dik302" }
+        ],
+        "seni musik": [
+            { nama: "Sejarah Musik", kode: "dik401" },
+            { nama: "Minor Vokal", kode: "dik402" }
+        ]
     };
     const dosenOptions = {};
 
@@ -85,7 +97,8 @@
 
         mataKuliahOptions[selectedJurusan].forEach(mataKuliah => {
           const option = document.createElement("option");
-          option.text = mataKuliah;
+          option.value = mataKuliah.nama;
+          option.text = mataKuliah.nama;
           mataKuliahSelect.add(option);
         });
 
@@ -145,6 +158,25 @@
       }
     }
 
-    // document.addEventListener("DOMContentLoaded", updateMataKuliahOptions);
-    document.getElementById("jurusan_matkul").addEventListener("click", updateMataKuliahOptions);
+    function updateKodeMatkul() {
+        const mataKuliahSelect = document.getElementById("nama_matkul");
+        const kodeMatkulInput = document.querySelector('input[name="kode_matkul"]');
+        const selectedMataKuliah = mataKuliahSelect.value;
+
+        const selectedJurusan = document.getElementById("jurusan_matkul").value;
+        const mataKuliahData = mataKuliahOptions[selectedJurusan].find(item => item.nama === selectedMataKuliah);
+
+        if (mataKuliahData) {
+            kodeMatkulInput.value = mataKuliahData.kode;
+        } else {
+            kodeMatkulInput.value = ""; // Set to empty if mata kuliah not found
+        }
+    }
+
+    document.getElementById("jurusan_matkul").addEventListener("change", function() {
+        updateMataKuliahOptions();
+        updateKodeMatkul();
+    });
+    document.getElementById("nama_matkul").addEventListener("change", updateKodeMatkul);
 </script>
+
