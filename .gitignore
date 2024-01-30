@@ -31,3 +31,6 @@ application/config/database*
 *.sublime-project
 /tests/tests/
 /tests/results/
+/dasonadmin-120
+readme.rst
+license.txt
